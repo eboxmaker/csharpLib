@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using MyJson;
 
 namespace AutoProject
 {
@@ -22,7 +22,6 @@ namespace AutoProject
         DataTable dt = new DataTable();
         Target mcu = new Target();
         jsonHlep js = new jsonHlep();
-        JsonManager jm = new JsonManager();
 
         JObject jo = new JObject();
         public Form1()

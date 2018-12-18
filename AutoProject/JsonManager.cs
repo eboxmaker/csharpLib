@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoProject
+namespace MyJson
 {
     class JsonManager
     {
@@ -152,115 +152,6 @@ namespace AutoProject
 
         }
 
-        //public DataTable todt(string str)
-        //{
-        //    JArray listy = JArray.Parse(str);
-
-        //    if (listy != null && listy.Count > 0)
-        //    {
-
-        //        foreach (JToken jt in listy)
-        //        {
-
-        //            foreach (IJEnumerable<JToken> jp in jt.Values())
-        //            {
-                        
-        //                JsonArrayObjects QW = JObject.Parse(jt.ToString());
-
-        //                for (int j = 0; j < QW.Count; j++)
-        //                {
-
-        //                    foreach (var qwqw in QW[j])
-        //                    {
-
-        //                        Logger.Info(qwqw.Key + "------" + qwqw.Value);
-
-        //                    }
-
-        //                }
-
-        //            }
-
-        //        }
-
-        //    }
-        //}
-        /// <summary>
-        /// Json 字符串 转换为 DataTable数据集合
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        //public static DataTable ToDataTable(string json)
-        //{
-        //    DataTable dataTable = new DataTable();  //实例化
-        //    DataTable result;
-        //    try
-            //{
-                //JsonSerializer javaScriptSerializer = new JsonSerializer();
-                //JsonReader reader = new JsonReader(json);
-                //JsonSerializer.MaxJsonLength = Int32.MaxValue; //取得最大数值
-               // ArrayList arrayList = JsonSerializer
-            //    if (arrayList.Count > 0)
-            //    {
-            //        foreach (Dictionary<string, object> dictionary in arrayList)
-            //        {
-            //            if (dictionary.Keys.Count<string>() == 0)
-            //            {
-            //                result = dataTable;
-            //                return result;
-            //            }
-            //            //Columns
-            //            if (dataTable.Columns.Count == 0)
-            //            {
-            //                foreach (string current in dictionary.Keys)
-            //                {
-            //                    if (current != "data")
-            //                        dataTable.Columns.Add(current, dictionary[current].GetType());
-            //                    else
-            //                    {
-            //                        ArrayList list = dictionary[current] as ArrayList;
-            //                        foreach (Dictionary<string, object> dic in list)
-            //                        {
-            //                            foreach (string key in dic.Keys)
-            //                            {
-            //                                dataTable.Columns.Add(key, dic[key].GetType());
-            //                            }
-            //                            break;
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //            //Rows
-            //            string root = "";
-            //            foreach (string current in dictionary.Keys)
-            //            {
-            //                if (current != "data")
-            //                    root = current;
-            //                else
-            //                {
-            //                    ArrayList list = dictionary[current] as ArrayList;
-            //                    foreach (Dictionary<string, object> dic in list)
-            //                    {
-            //                        DataRow dataRow = dataTable.NewRow();
-            //                        dataRow[root] = dictionary[root];
-            //                        foreach (string key in dic.Keys)
-            //                        {
-            //                            dataRow[key] = dic[key];
-            //                        }
-            //                        dataTable.Rows.Add(dataRow);
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //catch
-            //{
-            //}
-            //result = dataTable;
-            //return result;
-        //}
-
 
         /// <summary> 
         /// Datatable转换为Json 
@@ -296,6 +187,42 @@ namespace AutoProject
             jsonString.Remove(jsonString.Length - 1, 1);
             jsonString.Append("]");
             return jsonString.ToString();
+        }
+
+        private static string FileToBase64(string FilePath)
+        {
+            FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+            int nBytes = (int)fs.Length;
+            byte[] byteArray = new byte[nBytes];
+            int nByteReaded = fs.Read(byteArray, 0, nBytes);
+            string x = Convert.ToBase64String(byteArray);
+            return x;
+        }
+        public static string PackageFileToJsonString(string FilePath)
+        {
+            JObject obj = new JObject();
+            string name = Path.GetFileName(FilePath);
+            string data = FileToBase64(FilePath);
+            obj.Add("name", name);
+            obj.Add("data", data);
+            string jstring = JsonConvert.SerializeObject(obj);
+            return jstring;
+        }
+        public static bool SaveJsonStringFile(string JSFile,string Dircetoy)
+        {
+            JObject obj = JObject.Parse(JSFile);
+
+            string name = obj["name"].ToString();
+            string data = obj["data"].ToString();
+            
+            byte[] bArray =  Convert.FromBase64String(data);
+
+            FileStream fs = new FileStream(Dircetoy + name, FileMode.Create);
+
+            fs.Write(bArray,0,(int)bArray.Length);
+            fs.Flush();
+            fs.Close();
+            return true;
         }
 
     }

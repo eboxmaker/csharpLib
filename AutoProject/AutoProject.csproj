@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base64Hlep.cs" />
     <Compile Include="excleOpt.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
